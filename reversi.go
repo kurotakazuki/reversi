@@ -1,11 +1,6 @@
 package main
 
-import (
-	// "bufio"
-	"fmt"
-	// "os"
-	// "strconv"
-)
+import "fmt"
 
 type Board struct {
 	// ゲーム実行中フラグ
@@ -44,7 +39,6 @@ func (b *Board) initialize() {
 }
 
 func (b *Board) ShowBoard() {
-	// existEmpty := false
 	cntBlack := 0
 	cntWhite := 0
 
@@ -71,42 +65,20 @@ func (b *Board) ShowBoard() {
 	fmt.Println(b.WHITE+":", cntWhite)
 	fmt.Println("――――――――――――――")
 
-	// if existEmpty {
-	// 	fmt.Println(b.stone + "のターンです")
-	// } else {
-	// 	fmt.Println(b.stone + "ゲーム終了！")
-	// 	b.Game = false
-	// }
 }
+
+
 
 func main() {
 
 	var b Board
-	// b.game = false
-	//b.board =
+
 	b.EMPTY = " "
 	b.BLACK = "●"
 	b.WHITE = "○"
 	b.stone = ""
-	//b.rev_stone = ""
 	b.initialize()
 	b.ShowBoard()
 
-	// // コンソールからの入力を受け付ける
-	// scanner := bufio.NewScanner(os.Stdin)
 
-	// // ゲーム実行中フラグがtrueのあいだループする
-	// for game {
-	// 	fmt.Print("駒をおくx座標を入力してください:")
-	// 	scanner.Scan()
-	// 	x, _ := strconv.Atoi(scanner.Text())
-
-	// 	fmt.Print("駒をおくy座標を入力してください:")
-	// 	scanner.Scan()
-	// 	y, _ := strconv.Atoi(scanner.Text())
-
-	// 	setStone(x, y)
-	// }
-
-	// scanner.Close()
 }
