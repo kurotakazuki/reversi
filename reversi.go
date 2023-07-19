@@ -67,7 +67,59 @@ func (b *Board) ShowBoard() {
 
 }
 
+func (b *Board) allocable(rock string, x int, y int) bool {
+	// 空でなければ置けない
+	if !b.isEmpty {
+		return false
+	}
+	//
 
+	// 全方位の計算
+	for j := -1; j <= 1; j++ {
+		for i := -1; i <= 1; i++ {
+
+			// 真ん中方向除外
+			if i == 0 && j == 0 {
+				continue
+			}
+			// 盤面外
+			if x+i < 0 || x+i >= 8 || y+j < 0 || y+j >= 8 {
+				continue
+			}
+
+			if board[y+j][x+i] != color[*other] {
+				continue
+			}
+
+			for s := 2; s < 8; s++ {
+				if x+i*s >= 0 && x+i*s < 8 && y+j*s >= 0 && y+j*s < 8 {
+
+					if board[y+j*s][x+i*s] == nil {
+						break
+					}
+
+					if board[y+j*s][x+i*s] == color[player] {
+						return true
+					}
+				}
+			}
+		}
+	}
+	return false
+}
+
+func (b *Board) isEmpty(x int, y int) bool {
+	if b.board[x][y] == b.EMPTY {
+		return true
+	}
+	return false
+}
+func (b *Board) isOut(x int, y int) bool {
+	if x < 0 || 7 < x || y < 0 || 7 < y {
+		return true
+	}
+	return false
+}
 
 func main() {
 
@@ -79,6 +131,5 @@ func main() {
 	b.stone = ""
 	b.initialize()
 	b.ShowBoard()
-
 
 }
