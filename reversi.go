@@ -1,6 +1,11 @@
 package main
 
-import "fmt"
+import (
+	"bufio"
+	"fmt"
+	"os"
+	"strconv"
+)
 
 type Board struct {
 	// ゲーム実行中フラグ
@@ -12,6 +17,7 @@ type Board struct {
 	BLACK string
 	WHITE string
 	// 変数
+	next      string
 	stone     string
 	rev_stone string
 }
@@ -59,7 +65,7 @@ func (b *Board) CountWhite(cntWhite int, s string) int {
 }
 
 func (b *Board) ShowBoard() {
-	// existEmpty := false
+	existEmpty := true
 	cntBlack := 0
 	cntWhite := 0
 
@@ -81,13 +87,22 @@ func (b *Board) ShowBoard() {
 	fmt.Println(b.WHITE+":", cntWhite)
 	fmt.Println("――――――――――――――")
 
-	// if existEmpty {
-	// 	fmt.Println(b.stone + "のターンです")
-	// } else {
-	// 	fmt.Println(b.stone + "ゲーム終了！")
-	// 	b.Game = false
-	// }
+	if existEmpty {
+		if b.next == b.BLACK {
+			b.next = b.WHITE
+		} else if b.next == b.WHITE {
+			b.next = b.BLACK
+		}
+		fmt.Println(b.next + "のターンです")
+	} else {
+		fmt.Println("ゲーム終了！")
+		b.game = false
+	}
 
+}
+
+func (b *Board) setStone(x int, y int) {
+	b.board[x][y] = b.next
 }
 
 // func (b *Board) turnStone(x int, y int) {
@@ -203,26 +218,29 @@ func main() {
 	b.EMPTY = " "
 	b.BLACK = "●"
 	b.WHITE = "○"
-	b.stone = ""
+	b.next = b.WHITE
 	//b.rev_stone = ""
 	b.initialize()
 	b.ShowBoard()
 
-	// // コンソールからの入力を受け付ける
-	// scanner := bufio.NewScanner(os.Stdin)
+	// コンソールからの入力を受け付ける
+	scanner := bufio.NewScanner(os.Stdin)
 
-	// // ゲーム実行中フラグがtrueのあいだループする
-	// for game {
-	// 	fmt.Print("駒をおくx座標を入力してください:")
-	// 	scanner.Scan()
-	// 	x, _ := strconv.Atoi(scanner.Text())
+	// ゲーム実行中フラグがtrueのあいだループする
+	for b.game {
+		fmt.Print("駒をおくx座標を入力してください:")
+		scanner.Scan()
+		x, _ := strconv.Atoi(scanner.Text())
 
-	// 	fmt.Print("駒をおくy座標を入力してください:")
-	// 	scanner.Scan()
-	// 	y, _ := strconv.Atoi(scanner.Text())
+		fmt.Print("駒をおくy座標を入力してください:")
+		scanner.Scan()
+		y, _ := strconv.Atoi(scanner.Text())
 
-	// 	setStone(x, y)
-	// }
+		fmt.Println("x: ", x)
+		fmt.Println("y: ", y)
+		b.setStone(x, y)
+		b.ShowBoard()
+	}
 
 	// scanner.Close()
 }
