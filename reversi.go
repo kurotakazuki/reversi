@@ -90,17 +90,74 @@ func (b *Board) ShowBoard() {
 
 }
 
-// func (b *Board) turnStone(x int, y int) {
-// 	// 8方向の駒の配置を確認し、ひっくり返す
-// 	b.turnLeftUp(x, y)
-// 	b.turnUp(x, y)
-// 	b.turnRightUp(x, y)
-// 	b.turnLeft(x, y)
-// 	b.turnRight(x, y)
-// 	b.turnLeftDown(x, y)
-// 	b.turnDown(x, y)
-// 	b.turnRightDown(x, y)
-// }
+type Way struct {
+	i, j int
+}
+
+func (b *Board) allocableList(stone string, x int, y int) []Way {
+	var flippableWays []Way
+	// 空でなければ置けない
+	if !b.isEmpty(x, y) {
+		return flippableWays
+	}
+
+	// 全方位の計算
+	for j := -1; j <= 1; j++ {
+		for i := -1; i <= 1; i++ {
+
+			// 真ん中方向は除外
+			if i == 0 && j == 0 {
+				continue
+			}
+			xi := x + i
+			yj := y + j
+			// 盤面外
+			if isOut(xi, yj) {
+				continue
+			}
+			// 隣の石が同じ種類の石の場合は、配置できない
+			if b.board[xi][yj] == stone {
+				continue
+			}
+
+			for s := 2; s < 8; s++ {
+				// 盤面外のときは、配置できない
+				if isOut(x+i*s, y+j*s) {
+					break
+				}
+				// 空のときは、配置できない
+				if b.isEmpty(x+i*s, y+j*s) {
+					break
+				}
+				// 同じ種類の石の場合、配置できる
+				if b.board[x+i*s][y+j*s] == stone {
+					flippableWays = append(flippableWays, Way{i, j})
+				}
+			}
+		}
+	}
+	return flippableWays
+}
+
+func (b *Board) turnStone(stone string, x int, y int) {
+	for _, way := range b.allocableList(stone, x, y) {
+		b.turnStoneOfWay(stone, x, y, way)
+	}
+}
+
+func (b *Board) turnStoneOfWay(stone string, x int, y int, way Way) {
+	i := way.i
+	j := way.j
+	for s := 1; s < 8; s++ {
+		xis := x + i*s
+		yjs := y + j*s
+		b.board[xis][yjs] = stone
+		// 同じ種類の石の場合、配置できる
+		if b.board[xis][yjs] == stone {
+			break
+		}
+	}
+}
 
 // func (b *Board) turnLeftUp(x int, y int) {
 // 	if y > 1 && x > 1 {
@@ -207,7 +264,7 @@ func isOut(x int, y int) bool {
 	}
 	return false
 }
-func (b *Board) allocable(rock string, x int, y int) bool {
+func (b *Board) allocable(stone string, x int, y int) bool {
 	// 空でなければ置けない
 	if !b.isEmpty(x, y) {
 		return false
@@ -228,7 +285,7 @@ func (b *Board) allocable(rock string, x int, y int) bool {
 				continue
 			}
 			// 隣の石が同じ種類の石の場合は、配置できない
-			if b.board[xi][yj] == rock {
+			if b.board[xi][yj] == stone {
 				continue
 			}
 
@@ -242,7 +299,7 @@ func (b *Board) allocable(rock string, x int, y int) bool {
 					break
 				}
 				// 同じ種類の石の場合、配置できる
-				if b.board[x+i*s][y+j*s] == rock {
+				if b.board[x+i*s][y+j*s] == stone {
 					return true
 				}
 			}
