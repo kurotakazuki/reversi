@@ -88,6 +88,7 @@ func (b *Board) ShowBoard() {
 	// 	b.Game = false
 	// }
 
+
 }
 
 // func (b *Board) turnStone(x int, y int) {
@@ -194,6 +195,63 @@ func (b *Board) ShowBoard() {
 // 				if x+i >
 // // 同様に他の方向のひっくり返す処理を実装する
 // // turnUp, turnRightUp, turnLeft, turnRight, turnLeftDown, turnDown, turnRightDown
+
+func (b *Board) allocable(rock string, x int, y int) bool {
+	// 空でなければ置けない
+	if !b.isEmpty {
+		return false
+	}
+
+	// 全方位の計算
+	for j := -1; j <= 1; j++ {
+		for i := -1; i <= 1; i++ {
+
+			// 真ん中方向は除外
+			if i == 0 && j == 0 {
+				continue
+			}
+			xi := x + i
+			yj := y + j
+			// 盤面外
+			if isOut(xi, yj) {
+				continue
+			}
+			// 隣の石が同じ種類の石の場合は、配置できない
+			if b.board[xi][yj] == rock {
+				continue
+			}
+
+			for s := 2; s < 8; s++ {
+				// 盤面外のときは、配置できない
+				if isOut(x+i*s, y+j*s) {
+					break
+				}
+				// 空のときは、配置できない
+				if b.isEmpty(x+i*s, y+j*s) {
+					break
+				}
+				// 同じ種類の石の場合、配置できる
+				if b.board[x+i*s][y+j*s] == rock {
+					return true
+				}
+			}
+		}
+	}
+	return false
+}
+
+func (b *Board) isEmpty(x int, y int) bool {
+	if b.board[x][y] == b.EMPTY {
+		return true
+	}
+	return false
+}
+func isOut(x int, y int) bool {
+	if x < 0 || 7 < x || y < 0 || 7 < y {
+		return true
+	}
+	return false
+}
 
 func main() {
 
