@@ -88,7 +88,6 @@ func (b *Board) ShowBoard() {
 	// 	b.Game = false
 	// }
 
-
 }
 
 // func (b *Board) turnStone(x int, y int) {
@@ -196,9 +195,21 @@ func (b *Board) ShowBoard() {
 // // 同様に他の方向のひっくり返す処理を実装する
 // // turnUp, turnRightUp, turnLeft, turnRight, turnLeftDown, turnDown, turnRightDown
 
+func (b *Board) isEmpty(x int, y int) bool {
+	if b.board[x][y] == b.EMPTY {
+		return true
+	}
+	return false
+}
+func isOut(x int, y int) bool {
+	if x < 0 || 7 < x || y < 0 || 7 < y {
+		return true
+	}
+	return false
+}
 func (b *Board) allocable(rock string, x int, y int) bool {
 	// 空でなければ置けない
-	if !b.isEmpty {
+	if !b.isEmpty(x, y) {
 		return false
 	}
 
@@ -236,19 +247,6 @@ func (b *Board) allocable(rock string, x int, y int) bool {
 				}
 			}
 		}
-	}
-	return false
-}
-
-func (b *Board) isEmpty(x int, y int) bool {
-	if b.board[x][y] == b.EMPTY {
-		return true
-	}
-	return false
-}
-func isOut(x int, y int) bool {
-	if x < 0 || 7 < x || y < 0 || 7 < y {
-		return true
 	}
 	return false
 }
