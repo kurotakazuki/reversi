@@ -253,6 +253,25 @@ func (b *Board) allocable(stone string, x int, y int) bool {
 	return false
 }
 
+// 勝敗を判定する関数
+func (b *Board) determineWinner() string {
+	cntBlack := 0
+	cntWhite := 0
+
+	for i := 0; i < 8; i++ {
+		for j := 0; j < 8; j++ {
+			cntBlack = b.CountBlack(cntBlack, b.board[i][j])
+			cntWhite = b.CountWhite(cntWhite, b.board[i][j])
+		}
+	}
+
+	if cntBlack > cntWhite {
+		return fmt.Sprintf("%s が %d 対 %d で勝利しました！", b.BLACK, cntBlack, cntWhite)
+	} else if cntWhite > cntBlack {
+		return fmt.Sprintf("%s が %d 対 %d で勝利しました！", b.WHITE, cntWhite, cntBlack)
+	} else {
+		return "引き分けです！"
+
 func (b *Board) skipNext() {
 	if b.next == b.BLACK {
 		b.next = b.WHITE
@@ -307,7 +326,11 @@ func main() {
 		b.ShowBoard()
 
 	}
+	// 勝敗を判定する
+	result := b.determineWinner()
+	fmt.Println(result)
 	fmt.Println("ゲーム終了！")
+
 
 	// scanner.Close()
 }
