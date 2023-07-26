@@ -105,31 +105,22 @@ func (b *Board) setStone(x int, y int) bool {
 	if !b.allocable(b.next, x, y) {
 		return false
 	}
+	// おける場合：ひっくり返す
 	b.board[x][y] = b.next
+	b.turnStone(b.next, x, y)
 	return true
 }
 
-// func (b *Board) turnStone(x int, y int) {
-// 	// 8方向の駒の配置を確認し、ひっくり返す
-// 	b.turnLeftUp(x, y)
-// 	b.turnUp(x, y)
-// 	b.turnRightUp(x, y)
-// 	b.turnLeft(x, y)
-// 	b.turnRight(x, y)
-// 	b.turnLeftDown(x, y)
-// 	b.turnDown(x, y)
-// 	b.turnRightDown(x, y)
-// }
 type Way struct {
 	i, j int
 }
 
 func (b *Board) allocableList(stone string, x int, y int) []Way {
 	var flippableWays []Way
-	// 空でなければ置けない
-	if !b.isEmpty(x, y) {
-		return flippableWays
-	}
+	// // 空でなければ置けない
+	// if !b.isEmpty(x, y) {
+	// 	return flippableWays
+	// }
 
 	// 全方位の計算
 	for j := -1; j <= 1; j++ {
@@ -171,6 +162,7 @@ func (b *Board) allocableList(stone string, x int, y int) []Way {
 
 func (b *Board) turnStone(stone string, x int, y int) {
 	for _, way := range b.allocableList(stone, x, y) {
+		// fmt.Println("way: ", way)
 		b.turnStoneOfWay(stone, x, y, way)
 	}
 }
@@ -181,106 +173,14 @@ func (b *Board) turnStoneOfWay(stone string, x int, y int, way Way) {
 	for s := 1; s < 8; s++ {
 		xis := x + i*s
 		yjs := y + j*s
-		b.board[xis][yjs] = stone
-		// 同じ種類の石の場合、配置できる
+		// fmt.Println("ひっくり返す座標", xis, yjs)
+		// 同じ種類の石の場合、配置の終了
 		if b.board[xis][yjs] == stone {
 			break
 		}
+		b.board[xis][yjs] = stone
 	}
 }
-
-// func (b *Board) turnLeftUp(x int, y int) {
-// 	if y > 1 && x > 1 {
-// 		// となりの駒
-// 		next := b.board[y-1][x-1]
-
-// 		// となりの駒が裏駒の場合
-// 		if next == b.rev_stone {
-// 			// さらにその一つとなりから順に確認
-// 			for i := 2; true; i++ {
-// 				if x-i < 0 || y-i < 0 || b.board[y-i][x-i] == b.EMPTY {
-// 					// 駒がない場合終了
-// 					break
-// 				} else if b.board[y-i][x-i] == b.stone {
-// 					// 自駒の場合
-// 					// あいだの駒をすべて自駒にひっくりかえす
-// 					for t := 1; t < i; t++ {
-// 						// 配列の要素を上書き
-// 						b.board[y-t][x-t] = b.stone
-// 					}
-// 					break
-// 				}
-// 			}
-// 		}
-// 	}
-// }
-
-// func (b *Board) TurnUp(x, y int) {
-// 	if y > 1 {
-// 		next := b.Stones[y-1][x]
-
-// 		if next == b.RevStone {
-// 			for i := 2; ; i++ {
-// 				if y-i < 0 || b.Stones[y-i][x] == Empty {
-// 					break
-// 				} else if b.Stones[y-i][x] == b.Stone {
-// 					for t := 1; t < i; t++ {
-// 						b.Stones[y-t][x] = b.Stone
-// 					}
-// 					break
-// 				}
-// 			}
-// 		}
-// 	}
-// }
-
-// func (b *Board) TurnRightUp(x, y int) {
-// 	if y > 1 && x < 6 {
-// 		next := b.Stones[y-1][x+1]
-
-// 		if next == b.RevStone {
-// 			for i := 2; ; i++ {
-// 				if x+i > 7 || y-i < 0 || b.Stones[y-i][x+i] == Empty {
-// 					break
-// 				} else if b.Stones[y-i][x+i] == b.Stone {
-// 					for t := 1; t < i; t++ {
-// 						b.Stones[y-t][x+t] = b.Stone
-// 					}
-// 					break
-// 				}
-// 			}
-// 		}
-// 	}
-// }
-
-// func (b *Board) TurnDown(x, y int) {
-// 	if y < 6 {
-// 		next := b.Stones[y+1][x]
-
-// 		if next == b.RevStone {
-// 			for i := 2; ; i++ {
-// 				if y+i > 7 || b.Stones[y+i][x] == Empty {
-// 					break
-// 				} else if b.Stones[y+i][x] == b.Stone {
-// 					for t := 1; t < i; t++ {
-// 						b.Stones[y+t][x] = b.Stone
-// 					}
-// 					break
-// 				}
-// 			}
-// 		}
-// 	}
-// }
-
-// func (b *Board) TurnRight(x, y int) {
-// 	if x < 6 {
-// 		next := b.Stones[y][x+1]
-
-// 		if next == b.RevStone {
-// 			for i := 2; ; i++ {
-// 				if x+i >
-// // 同様に他の方向のひっくり返す処理を実装する
-// // turnUp, turnRightUp, turnLeft, turnRight, turnLeftDown, turnDown, turnRightDown
 
 func (b *Board) isEmpty(x int, y int) bool {
 	if b.board[x][y] == b.EMPTY {
