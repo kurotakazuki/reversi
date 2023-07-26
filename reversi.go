@@ -271,6 +271,8 @@ func (b *Board) determineWinner() string {
 		return fmt.Sprintf("%s が %d 対 %d で勝利しました！", b.WHITE, cntWhite, cntBlack)
 	} else {
 		return "引き分けです！"
+	}
+}
 
 func (b *Board) skipNext() {
 	if b.next == b.BLACK {
@@ -330,7 +332,6 @@ func main() {
 	result := b.determineWinner()
 	fmt.Println(result)
 	fmt.Println("ゲーム終了！")
-
 
 	// scanner.Close()
 }
