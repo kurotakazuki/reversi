@@ -20,6 +20,8 @@ type Board struct {
 	next      string
 	stone     string
 	rev_stone string
+	// スキップした数
+	skipNum int
 }
 
 func (b *Board) initialize() {
@@ -42,6 +44,8 @@ func (b *Board) initialize() {
 
 	// ゲーム実行中フラグ
 	b.game = true
+
+	b.skipNum = 0
 }
 
 func (b *Board) CountBlack(cntBlack int, s string) int {
@@ -88,18 +92,29 @@ func (b *Board) ShowBoard() {
 	fmt.Println("――――――――――――――")
 
 	if existEmpty {
-		if b.next == b.BLACK {
-			b.next = b.WHITE
-		} else if b.next == b.WHITE {
-			b.next = b.BLACK
-		}
-		fmt.Println(b.next + "のターンです")
+		b.skipNext()
 	} else {
-		fmt.Println("ゲーム終了！")
 		b.game = false
 	}
-
 }
+
+func (b *Board) skip() bool {
+
+	// 全ての座標で配置できるか確認
+	for i := 0; i < 8; i++ {
+		for j := 0; j < 8; j++ {
+			if b.isEmpty(i, j) {
+				if b.allocable(b.next, i, j) {
+					b.skipNum = 0
+					return false
+				}
+			}
+		}
+	}
+	b.skipNum += 1
+	return true
+}
+
 func (b *Board) setStone(x int, y int) bool {
 	// 置けるかの確認
 	if !b.allocable(b.next, x, y) {
@@ -238,6 +253,14 @@ func (b *Board) allocable(stone string, x int, y int) bool {
 	return false
 }
 
+func (b *Board) skipNext() {
+	if b.next == b.BLACK {
+		b.next = b.WHITE
+	} else if b.next == b.WHITE {
+		b.next = b.BLACK
+	}
+}
+
 func main() {
 
 	var b Board
@@ -256,6 +279,17 @@ func main() {
 
 	// ゲーム実行中フラグがtrueのあいだループする
 	for b.game {
+		if b.skip() {
+			// コマの交代
+			fmt.Println(b.next + "はどこにも配置できません。スキップします。")
+			// 二人ともスキップした場合、終了
+			if b.skipNum == 2 {
+				break
+			}
+			b.skipNext()
+			continue
+		}
+		fmt.Println(b.next + "のターンです")
 		fmt.Print("駒をおくx座標を入力してください:")
 		scanner.Scan()
 		x, _ := strconv.Atoi(scanner.Text())
@@ -273,6 +307,7 @@ func main() {
 		b.ShowBoard()
 
 	}
+	fmt.Println("ゲーム終了！")
 
 	// scanner.Close()
 }
