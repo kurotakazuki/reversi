@@ -53,56 +53,38 @@ func TestBoard_allocableList(t *testing.T) {
 	}
 }
 
-// func TestBoard_turnStone(t *testing.T) {
-// 	b := Board{}
-// 	b.EMPTY = " "
-// 	b.BLACK = "●"
-// 	b.WHITE = "○"
-// 	b.initialize()
+func TestBoard_turnStone(t *testing.T) {
+	b := Board{}
+	b.EMPTY = " "
+	b.BLACK = "●"
+	b.WHITE = "○"
+	b.next = b.BLACK
+	b.initialize()
 
-// 	b.setStone(2, 3) // Put BLACK stone at (2,3)
-// 	b.turnStone(b.BLACK, 2, 3)
+	b.setStone(3, 5) // Put BLACK stone at (2,3)
 
-// 	// Check if the stone at (3,3) turned from WHITE to BLACK
-// 	if b.board[3][3] != b.BLACK {
-// 		t.Errorf("Expected board[3][3] to be BLACK, but got %s", b.board[3][3])
-// 	}
-// }
+	// Check if the stone at (3,3) turned from WHITE to BLACK
+	if b.board[3][4] != b.BLACK {
+		t.Errorf("Expected board[3][4] to be BLACK, but got %s", b.board[3][4])
+	}
+}
 
-// func TestBoardCount(t *testing.T) {
-// 	var b Board
-// 	b.EMPTY = " "
-// 	b.BLACK = "●"
-// 	b.WHITE = "○"
+func TestBoardCount(t *testing.T) {
+	var b Board
+	b.EMPTY = " "
+	b.BLACK = "●"
+	b.WHITE = "○"
 
-// 	blackCounter := 0
-// 	whiteCounter := 0
+	blackCounter := 0
+	whiteCounter := 0
 
-// 	blackCounter = b.CountBlack(blackCounter, b.BLACK)
-// 	if blackCounter != 1 {
-// 		t.Errorf("CountBlack function is not working correctly. Expected 1 but got %d", blackCounter)
-// 	}
+	blackCounter = b.CountBlack(blackCounter, b.BLACK)
+	if blackCounter != 1 {
+		t.Errorf("CountBlack function is not working correctly. Expected 1 but got %d", blackCounter)
+	}
 
-// 	whiteCounter = b.CountWhite(whiteCounter, b.WHITE)
-// 	if whiteCounter != 1 {
-// 		t.Errorf("CountWhite function is not working correctly. Expected 1 but got %d", whiteCounter)
-// 	}
-// }
-
-// // Due to ShowBoard() doesn't return any values and it's output oriented, it's hard to test it properly.
-// // We could, however, check if it runs without crashing
-// func TestShowBoard(t *testing.T) {
-// 	var b Board
-// 	b.EMPTY = " "
-// 	b.BLACK = "●"
-// 	b.WHITE = "○"
-// 	b.initialize()
-
-// 	defer func() {
-// 		if r := recover(); r != nil {
-// 			t.Errorf("The code panicked")
-// 		}
-// 	}()
-
-// 	b.ShowBoard()
-// }
+	whiteCounter = b.CountWhite(whiteCounter, b.WHITE)
+	if whiteCounter != 1 {
+		t.Errorf("CountWhite function is not working correctly. Expected 1 but got %d", whiteCounter)
+	}
+}
