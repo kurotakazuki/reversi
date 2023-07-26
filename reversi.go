@@ -100,8 +100,13 @@ func (b *Board) ShowBoard() {
 	}
 
 }
-func (b *Board) setStone(x int, y int) {
+func (b *Board) setStone(x int, y int) bool {
+	// 置けるかの確認
+	if !b.allocable(b.next, x, y) {
+		return false
+	}
 	b.board[x][y] = b.next
+	return true
 }
 
 // func (b *Board) turnStone(x int, y int) {
@@ -361,8 +366,12 @@ func main() {
 
 		fmt.Println("x: ", x)
 		fmt.Println("y: ", y)
-		b.setStone(x, y)
+		if !b.setStone(x, y) {
+			continue
+		}
+
 		b.ShowBoard()
+
 	}
 
 	// scanner.Close()
